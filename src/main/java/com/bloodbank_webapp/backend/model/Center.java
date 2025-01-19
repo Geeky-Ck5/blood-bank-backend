@@ -16,8 +16,8 @@ public class Center {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "street_address", nullable = false, length = 255)
-    private String streetAddress;
+    @Column(name = "address", nullable = false, length = 255)
+    private String address;
 
     @Column(name = "city", nullable = false, length = 100)
     private String city;
@@ -33,6 +33,13 @@ public class Center {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "LATITUDE")
+    private Float latitude;
+
+    @Column(name = "LONGITUDE")
+    private Float longitude;
+
 
     @OneToMany(mappedBy = "preferredCenter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Users> users;
@@ -54,12 +61,12 @@ public class Center {
         this.name = name;
     }
 
-    public String getStreetAddress() {
-        return streetAddress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setStreetAddress(String streetAddress) {
-        this.streetAddress = streetAddress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getCity() {
@@ -108,5 +115,21 @@ public class Center {
 
     public void setUsers(Set<Users> users) {
         this.users = users;
+    }
+
+    public Float getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Float latitude) {
+        this.latitude = latitude;
+    }
+
+    public Float getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Float longitude) {
+        this.longitude = longitude;
     }
 }

@@ -15,15 +15,10 @@ public class CenterService {
     @Autowired
     private CenterRepository centerRepository;
 
-    public List<CenterDTO> getAllCenters() {
-        List<Center> centers = centerRepository.findAll();
-        return centers.stream().map(this::mapToDTO).collect(Collectors.toList());
-    }
 
-    public CenterDTO getCenterById(Long id) {
-        Center center = centerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Center not found"));
-        return mapToDTO(center);
+    public Center getCenterById(Long centerId) {
+        return centerRepository.findById(centerId)
+                .orElseThrow(() -> new RuntimeException("Center not found with id: " + centerId));
     }
 
     public void createCenter(CenterDTO centerDTO) {
@@ -36,7 +31,7 @@ public class CenterService {
         CenterDTO dto = new CenterDTO();
         dto.setCenterId(center.getCenterId());
         dto.setName(center.getName());
-        dto.setStreetAddress(center.getStreetAddress());
+        dto.setStreetAddress(center.getAddress());
         dto.setCity(center.getCity());
         dto.setDistrict(center.getDistrict());
         dto.setCountry(center.getCountry());
@@ -48,11 +43,15 @@ public class CenterService {
     private Center mapToEntity(CenterDTO dto) {
         Center center = new Center();
         center.setName(dto.getName());
-        center.setStreetAddress(dto.getStreetAddress());
+        center.setAddress(dto.getStreetAddress());
         center.setCity(dto.getCity());
         center.setDistrict(dto.getDistrict());
         center.setCountry(dto.getCountry());
         center.setContactNumber(dto.getContactNumber());
         return center;
+    }
+
+    public List<Center> getAllCenters() {
+        return centerRepository.findAll();
     }
 }

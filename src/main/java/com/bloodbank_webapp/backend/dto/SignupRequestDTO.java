@@ -3,6 +3,7 @@ package com.bloodbank_webapp.backend.dto;
 public class SignupRequestDTO {
     private String email;
     private String password;
+    private String role;
 
     // Default constructor
     public SignupRequestDTO() {
@@ -23,6 +24,10 @@ public class SignupRequestDTO {
         return password;
     }
 
+    public String getRole() {
+        return role; // Getter for role
+    }
+
     // Setters
     public void setEmail(String email) {
         this.email = email;
@@ -30,5 +35,18 @@ public class SignupRequestDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setRole(String role) {
+        this.role = role; // Setter for role
+    }
+
+    @Override
+    public String toString() {
+        return "SignupRequestDTO{" +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
+                '}';
     }
 }

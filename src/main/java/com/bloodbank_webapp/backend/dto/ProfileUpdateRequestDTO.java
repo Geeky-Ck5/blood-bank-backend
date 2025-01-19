@@ -4,6 +4,12 @@ import com.bloodbank_webapp.backend.model.Users;
 
 public class ProfileUpdateRequestDTO {
     private String firstName;
+    private String lastName;
+    private Users.Gender gender;
+    private String nationalId;
+    private String bloodGroup;
+    private boolean eligibilityStatus;
+    private Long preferredCenterId;
 
     public String getFirstName() {
         return firstName;
@@ -45,19 +51,32 @@ public class ProfileUpdateRequestDTO {
         this.bloodGroup = bloodGroup;
     }
 
-    private String lastName;
-    private Users.Gender gender;
-    private String nationalId;
-    private String bloodGroup;
+    public boolean isEligibilityStatus() {
+        return eligibilityStatus;
+    }
+
+    public void setEligibilityStatus(boolean eligibilityStatus) {
+        this.eligibilityStatus = eligibilityStatus;
+    }
+
+    public Long getPreferredCenterId() {
+        return preferredCenterId;
+    }
+
+    public void setPreferredCenterId(Long preferredCenterId) {
+        this.preferredCenterId = preferredCenterId;
+    }
 
     public ProfileUpdateRequestDTO() {
     }
 
-    public ProfileUpdateRequestDTO(String firstName, String lastName, String gender, String nationalId, String bloodGroup) {
+    public ProfileUpdateRequestDTO(String firstName, String lastName, String gender, String nationalId, String bloodGroup, boolean eligibilityStatus, Long preferredCenterId) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = Users.Gender.valueOf(gender);
         this.nationalId = nationalId;
         this.bloodGroup = bloodGroup;
+        this.eligibilityStatus = eligibilityStatus;
+        this.preferredCenterId = preferredCenterId;
     }
 }

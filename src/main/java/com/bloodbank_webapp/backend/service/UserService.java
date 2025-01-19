@@ -3,8 +3,10 @@ package com.bloodbank_webapp.backend.service;
 import com.bloodbank_webapp.backend.dto.ProfileUpdateRequestDTO;
 import com.bloodbank_webapp.backend.dto.SignupRequestDTO;
 import com.bloodbank_webapp.backend.dto.UserDTO;
+import com.bloodbank_webapp.backend.model.Center;
 import com.bloodbank_webapp.backend.model.Users;
 import com.bloodbank_webapp.backend.repository.UserRepository;
+import com.bloodbank_webapp.backend.repository.CenterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,12 +21,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private CenterRepository centerRepository;
+
     public UserDTO findUserByEmail(String email) {
-        Optional<Users> user = userRepository.findByEmail(email);
-        if (user.isPresent()) {
-            return mapToDTO(user.get());
-        }
-        throw new RuntimeException("User not found");
+
+        Optional<Users> user = userRepository.findByEmail(email.trim().toLowerCase());
+        return user.map(this::mapToDTO)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
     }
 
     public UserDTO activateUser(String token) {
@@ -51,8 +55,8 @@ public class UserService {
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setEmail(user.getEmail());
-        dto.setPassword(passwordEncoder.encode(user.getPassword()));
-        dto.setRole(user.getRole().name());
+        dto.setPassword(user.getPassword());
+        dto.setRole(user.getRole());
         dto.setGender(user.getGender().name());
         dto.setNationalId(user.getNationalId());
         dto.setBloodGroup(user.getBloodGroup());
@@ -72,7 +76,7 @@ public class UserService {
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setRole(Users.Role.valueOf(dto.getRole().toUpperCase()));
+        user.setRole(dto.getRole());
         user.setGender(Users.Gender.valueOf(dto.getGender().toUpperCase()));
         user.setNationalId(dto.getNationalId());
         user.setBloodGroup(dto.getBloodGroup());
@@ -85,16 +89,13 @@ public class UserService {
 
     public String login(String email, String password) {
         Users user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (!user.getStatus().equals(Users.Status.ACTIVE)) {
-            throw new RuntimeException("Account is not active.");
-        }
+                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid credentials.");
+            throw new RuntimeException("Invalid email or password");
         }
 
+        // Return a success response or generate a token if using JWT
         return "Login successful";
     }
 
@@ -112,7 +113,7 @@ public class UserService {
         newUser.setEmail(signupRequest.getEmail());
         newUser.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         newUser.setStatus(Users.Status.INACTIVE); // Default status
-        newUser.setRole(Users.Role.DONOR); // Default role
+        newUser.setRole(signupRequest.getRole()); // Default role
         newUser.setCreatedAt(LocalDateTime.now());
 
         userRepository.save(newUser);
@@ -124,9 +125,44 @@ public class UserService {
         user.setGender(profileRequest.getGender());
         user.setNationalId(profileRequest.getNationalId());
         user.setBloodGroup(profileRequest.getBloodGroup());
-        user.setEligibilityStatus(true); // Example logic
+        user.setEligibilityStatus(profileRequest.isEligibilityStatus());
         user.setStatus(Users.Status.ACTIVE);
+
+        // Handle preferred center update
+        if (profileRequest.getPreferredCenterId() != null) {
+            Center preferredCenter = centerRepository.findById(profileRequest.getPreferredCenterId())
+                    .orElseThrow(() -> new RuntimeException("Center not found with id: " + profileRequest.getPreferredCenterId()));
+            user.setPreferredCenter(preferredCenter);
+        }
 
         userRepository.save(user);
     }
+
+    public static class UserNotFoundException extends RuntimeException {
+        public UserNotFoundException(String message) {
+            super(message);
+        }
+    }
+
+
+    public Users authenticate(String email, String password) {
+        // Find the user by email
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+
+        // Validate the password
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Invalid email or password");
+        }
+
+        // Return the authenticated user
+        return user;
+    }
+
+    public Users getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+    }
+
+
 }

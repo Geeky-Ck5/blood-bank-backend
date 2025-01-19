@@ -26,11 +26,18 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupRequestDTO signupRequest) {
+    public ResponseEntity<Map<String, String>> signup(@RequestBody SignupRequestDTO signupRequest) {
+        // Validate role field
+        if (!"donor".equalsIgnoreCase(signupRequest.getRole()) &&
+                !"recipient".equalsIgnoreCase(signupRequest.getRole())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "Invalid role specified. Please choose 'donor' or 'recipient'."));
+        }
+
         userService.signup(signupRequest);
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .header("Content-Type", "text/plain")
-                .body("User registered successfully.");
+                .body(Map.of("message", "User registered successfully."));
     }
 
     @GetMapping("/{email}")
@@ -56,5 +63,11 @@ public class UserController {
         return ResponseEntity.ok("Profile updated successfully.");
     }
 
+    @PutMapping("/{id}/profile")
+    public ResponseEntity<String> updateProfile(@PathVariable Long id, @RequestBody ProfileUpdateRequestDTO profileRequest) {
+        Users user = userService.getUserById(id); // Assuming a getUserById method exists
+        userService.updateProfile(user, profileRequest);
+        return ResponseEntity.ok("Profile updated successfully.");
+    }
 
 }

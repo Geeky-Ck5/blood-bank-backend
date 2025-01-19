@@ -1,6 +1,8 @@
 package com.bloodbank_webapp.backend.model;
 
 import jakarta.persistence.*;
+
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,9 +26,8 @@ public class Users {
     @Column(name = "PASSWORDHASH", nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "ROLE", nullable = true)
-    private Role role; // ENUM: 'donor', 'recipient', 'admin'
+    @Column(name = "ROLE", nullable = false)
+    private String role;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "GENDER", nullable = true)
@@ -102,11 +103,11 @@ public class Users {
         this.password = password;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 
@@ -212,7 +213,7 @@ public class Users {
     }
 
     public enum Role {
-        DONOR, RECIPIENT, ADMIN
+        donor, recipient, admin
     }
 
     public enum Gender {
