@@ -9,59 +9,59 @@ public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userid", nullable = false)
+    @Column(name = "USERID", nullable = false)
     private Long userId;
 
-    @Column(name = "first_name", nullable = false, length = 100)
+    @Column(name = "FIRSTNAME", nullable = true, length = 100)
     private String firstName;
 
-    @Column(name = "last_name", nullable = false, length = 100)
+    @Column(name = "LASTNAME", nullable = true, length = 100)
     private String lastName;
 
-    @Column(name = "email", nullable = false, unique = true, length = 100)
+    @Column(name = "EMAIL", nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(name = "password_hash", nullable = false)
+    @Column(name = "PASSWORDHASH", nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
+    @Column(name = "ROLE", nullable = true)
     private Role role; // ENUM: 'donor', 'recipient', 'admin'
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender", nullable = false)
+    @Column(name = "GENDER", nullable = true)
     private Gender gender; // ENUM: 'male', 'female', 'other'
 
-    @Column(name = "national_id", nullable = false, unique = true, length = 14)
+    @Column(name = "NATIONAL_ID", nullable = true, unique = true, length = 14)
     private String nationalId;
 
-    @Column(name = "blood_group", length = 3)
+    @Column(name = "BLOOD_GROUP",nullable = true, length = 3)
     private String bloodGroup; // E.g., A+, B-, etc.
 
-    @Column(name = "eligibility_status", nullable = false)
+    @Column(name = "ELIGIBILITY_STATUS", nullable = true)
     private boolean eligibilityStatus;
 
-    @Column(name = "last_donation")
+    @Column(name = "LAST_DONATION",nullable = true)
     private LocalDateTime lastDonation;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "STATUS", nullable = true)
     private Status status; // ENUM: 'active', 'inactive'
 
-    @Column(name = "activation_token", unique = true)
+    @Column(name = "ACTIVATION_TOKEN",nullable = true, unique = true)
     private String activationToken;
 
-    @Column(name = "token_expiry")
+    @Column(name = "TOKEN_EXPIRY",nullable = true)
     private LocalDateTime tokenExpiry;
 
-    @Column(name = "auto_reminders", nullable = false)
+    @Column(name = "AUTO_REMINDERS", nullable = true)
     private boolean autoReminders;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "preferred_center")
+    @JoinColumn(name = "PREFERRED_CENTER", nullable = true)
     private Center preferredCenter;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "CREATED_AT", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     // Getters and Setters

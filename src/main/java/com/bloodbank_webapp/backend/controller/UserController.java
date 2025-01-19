@@ -11,8 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/")
 public class UserController {
 
     @Autowired
@@ -25,7 +28,9 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignupRequestDTO signupRequest) {
         userService.signup(signupRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully.");
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .header("Content-Type", "text/plain")
+                .body("User registered successfully.");
     }
 
     @GetMapping("/{email}")

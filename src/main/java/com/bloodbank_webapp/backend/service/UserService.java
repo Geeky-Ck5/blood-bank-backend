@@ -51,6 +51,7 @@ public class UserService {
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setEmail(user.getEmail());
+        dto.setPassword(passwordEncoder.encode(user.getPassword()));
         dto.setRole(user.getRole().name());
         dto.setGender(user.getGender().name());
         dto.setNationalId(user.getNationalId());
@@ -70,6 +71,7 @@ public class UserService {
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setRole(Users.Role.valueOf(dto.getRole().toUpperCase()));
         user.setGender(Users.Gender.valueOf(dto.getGender().toUpperCase()));
         user.setNationalId(dto.getNationalId());
@@ -106,14 +108,14 @@ public class UserService {
             throw new IllegalArgumentException("Email already exists.");
         }
 
-        Users user = new Users();
-        user.setEmail(signupRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        user.setStatus(Users.Status.INACTIVE); // Default status
-        user.setRole(Users.Role.DONOR); // Default role
-        user.setCreatedAt(LocalDateTime.now());
+        Users newUser = new Users();
+        newUser.setEmail(signupRequest.getEmail());
+        newUser.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+        newUser.setStatus(Users.Status.INACTIVE); // Default status
+        newUser.setRole(Users.Role.DONOR); // Default role
+        newUser.setCreatedAt(LocalDateTime.now());
 
-        userRepository.save(user);
+        userRepository.save(newUser);
     }
 
     public void updateProfile(Users user, ProfileUpdateRequestDTO profileRequest) {

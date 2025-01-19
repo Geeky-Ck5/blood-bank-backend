@@ -5,6 +5,7 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private String email;
+    private String password;
     private String role;
     private String gender;
     private String nationalId;
@@ -13,6 +14,7 @@ public class UserDTO {
     private String status;
     private boolean autoReminders;
     private Long preferredCenterId;
+
 
     // Getters and Setters
     public Long getUserId() {
@@ -47,12 +49,20 @@ public class UserDTO {
         this.email = email;
     }
 
+    public String getPassword() { // Getter for password
+        return password;
+    }
+
+    public void setPassword(String password) { // Setter for password
+        this.password = password;
+    }
+
     public String getRole() {
         return role;
     }
 
     public void setRole(String role) {
-        this.role = role;
+        this.role = (role).toUpperCase();
     }
 
     public String getGender() {

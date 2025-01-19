@@ -23,8 +23,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF for H2 console
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**").permitAll()  // Allow H2 console access
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()  // Allow H2 console access
+
                 )
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable) // Allow frames for H2 console
