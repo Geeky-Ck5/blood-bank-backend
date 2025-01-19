@@ -1,18 +1,23 @@
 package com.bloodbank_webapp.backend.service;
 
+import com.bloodbank_webapp.backend.dto.ProfileUpdateRequestDTO;
+import com.bloodbank_webapp.backend.dto.SignupRequestDTO;
 import com.bloodbank_webapp.backend.dto.UserDTO;
 import com.bloodbank_webapp.backend.model.Users;
 import com.bloodbank_webapp.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
 public class UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserDTO findUserByEmail(String email) {
         Optional<Users> user = userRepository.findByEmail(email);
@@ -75,8 +80,6 @@ public class UserService {
         return user;
     }
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     public String login(String email, String password) {
         Users user = userRepository.findByEmail(email)
@@ -91,5 +94,37 @@ public class UserService {
         }
 
         return "Login successful";
+    }
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public void signup(SignupRequestDTO signupRequest) {
+        if (userRepository.findByEmail(signupRequest.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already exists.");
+        }
+
+        Users user = new Users();
+        user.setEmail(signupRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+        user.setStatus(Users.Status.INACTIVE); // Default status
+        user.setRole(Users.Role.DONOR); // Default role
+        user.setCreatedAt(LocalDateTime.now());
+
+        userRepository.save(user);
+    }
+
+    public void updateProfile(Users user, ProfileUpdateRequestDTO profileRequest) {
+        user.setFirstName(profileRequest.getFirstName());
+        user.setLastName(profileRequest.getLastName());
+        user.setGender(profileRequest.getGender());
+        user.setNationalId(profileRequest.getNationalId());
+        user.setBloodGroup(profileRequest.getBloodGroup());
+        user.setEligibilityStatus(true); // Example logic
+        user.setStatus(Users.Status.ACTIVE);
+
+        userRepository.save(user);
     }
 }
