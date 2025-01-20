@@ -1,8 +1,9 @@
 package com.bloodbank_webapp.backend.controller;
 
-import com.bloodbank_webapp.backend.dto.ContactInfoDTO;
+import com.bloodbank_webapp.backend.model.ContactInfo;
 import com.bloodbank_webapp.backend.service.ContactInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,19 +15,15 @@ public class ContactInfoController {
     @Autowired
     private ContactInfoService contactInfoService;
 
-    @GetMapping
-    public List<ContactInfoDTO> getAllContactInfos() {
-        return contactInfoService.getAllContactInfos();
+    @GetMapping("/{userId}")
+    public ResponseEntity<ContactInfo> getContactInfo(@PathVariable Long userId) {
+        return ResponseEntity.ok(contactInfoService.getContactInfoByUserId(userId));
     }
 
-    @GetMapping("/{id}")
-    public ContactInfoDTO getContactInfoById(@PathVariable Long id) {
-        return contactInfoService.getContactInfoById(id);
-    }
-
-    @PostMapping
-    public String createContactInfo(@RequestBody ContactInfoDTO contactInfoDTO) {
-        contactInfoService.createContactInfo(contactInfoDTO);
-        return "Contact Info created successfully.";
+    @PutMapping("/{userId}")
+    public ResponseEntity<ContactInfo> updateContactInfo(
+            @PathVariable Long userId,
+            @RequestBody ContactInfo contactInfoRequest) {
+        return ResponseEntity.ok(contactInfoService.updateContactInfo(userId, contactInfoRequest));
     }
 }

@@ -3,13 +3,23 @@ package com.bloodbank_webapp.backend.dto;
 import com.bloodbank_webapp.backend.model.Users;
 
 public class ProfileUpdateRequestDTO {
+    private Long userId; // Add this field
     private String firstName;
     private String lastName;
-    private Users.Gender gender;
+    private String gender;
     private String nationalId;
     private String bloodGroup;
     private boolean eligibilityStatus;
     private Long preferredCenterId;
+
+    // Getter and Setter for userId
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -27,11 +37,11 @@ public class ProfileUpdateRequestDTO {
         this.lastName = lastName;
     }
 
-    public Users.Gender getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(Users.Gender gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
@@ -73,10 +83,11 @@ public class ProfileUpdateRequestDTO {
     public ProfileUpdateRequestDTO(String firstName, String lastName, String gender, String nationalId, String bloodGroup, boolean eligibilityStatus, Long preferredCenterId) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.gender = Users.Gender.valueOf(gender);
+        this.gender = gender;
         this.nationalId = nationalId;
         this.bloodGroup = bloodGroup;
         this.eligibilityStatus = eligibilityStatus;
         this.preferredCenterId = preferredCenterId;
     }
+
 }

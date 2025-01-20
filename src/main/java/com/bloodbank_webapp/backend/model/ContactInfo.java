@@ -8,41 +8,49 @@ public class ContactInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "contact_id", nullable = false)
+    @Column(name = "CONTACT_ID")
     private Long contactId;
 
-    @Column(name = "phone_number", length = 7)
+    @Column(name = "PHONE_NUMBER", length = 7, nullable = true)
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "mobile_operator", nullable = false)
-    private MobileOperator mobileOperator; // ENUM: 'EMTEL', 'MYTMU', 'CHILLI', 'OTHER'
+    @Column(name = "MOBILE_OPERATOR", nullable = true)
+    private MobileOperator mobileOperator;
 
-    @Column(name = "mobile_number", length = 8, nullable = false)
+    @Column(name = "MOBILE_NUMBER", length = 8, nullable = true)
     private String mobileNumber;
 
-    @Column(name = "street_address", length = 255)
+    @Column(name = "STREET_ADDRESS", length = 255, nullable = true)
     private String streetAddress;
 
-    @Column(name = "address_line_1", length = 255)
+    @Column(name = "ADDRESS_LINE_1", length = 255, nullable = true)
     private String addressLine1;
 
-    @Column(name = "address_line_2", length = 255)
+    @Column(name = "ADDRESS_LINE_2", length = 255, nullable = true)
     private String addressLine2;
 
-    @Column(name = "address_line_3", length = 255)
+    @Column(name = "ADDRESS_LINE_3", length = 255, nullable = true)
     private String addressLine3;
 
-    @Column(name = "city", length = 255)
+    @Column(name = "CITY", length = 255, nullable = true)
     private String city;
 
-    @Column(name = "district", length = 50)
+    @Column(name = "DISTRICT", length = 50, nullable = true)
     private String district;
 
-    @Column(name = "country", length = 50)
+    @Column(name = "COUNTRY", length = 50, nullable = true)
     private String country;
 
-    // Getters and Setters
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "USERID", referencedColumnName = "USERID", nullable = false)
+    private Users user;
+
+    public enum MobileOperator {
+        emtel, mytmu, chilli, other
+    }
+
+    // Getters AND Setters
     public Long getContactId() {
         return contactId;
     }
@@ -131,7 +139,11 @@ public class ContactInfo {
         this.country = country;
     }
 
-    public enum MobileOperator {
-        EMTEL, MYTMU, CHILLI, OTHER
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
     }
 }

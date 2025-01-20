@@ -217,7 +217,9 @@ public class Users {
     }
 
     public enum Gender {
-        MALE, FEMALE, OTHER
+       MALE, FEMALE, OTHER;
+
+
     }
 
     public enum Status {

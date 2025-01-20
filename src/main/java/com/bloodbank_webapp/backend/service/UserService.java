@@ -120,9 +120,26 @@ public class UserService {
     }
 
     public void updateProfile(Users user, ProfileUpdateRequestDTO profileRequest) {
+        // Validate the provided user object or fetch it from the database
+        if (user == null) {
+            user = getUserById(profileRequest.getUserId());
+            if (user == null) {
+                throw new UserNotFoundException("User not found with ID: " + profileRequest.getUserId());
+            }
+        }
+
+
+
         user.setFirstName(profileRequest.getFirstName());
         user.setLastName(profileRequest.getLastName());
-        user.setGender(profileRequest.getGender());
+        if (profileRequest.getGender() != null) {
+            try {
+                // Normalize string input before converting to enum
+                user.setGender(Users.Gender.valueOf(profileRequest.getGender().trim().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Invalid gender value: " + profileRequest.getGender());
+            }
+        }
         user.setNationalId(profileRequest.getNationalId());
         user.setBloodGroup(profileRequest.getBloodGroup());
         user.setEligibilityStatus(profileRequest.isEligibilityStatus());

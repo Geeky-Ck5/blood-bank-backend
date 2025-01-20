@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ContactInfoRepository extends JpaRepository<ContactInfo, Long> {
+    ContactInfo findByUserUserId(Long userId);
 }

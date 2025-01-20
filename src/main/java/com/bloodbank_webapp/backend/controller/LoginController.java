@@ -16,18 +16,20 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
+
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginDTO loginRequest) {
-        try {
-            Users user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
-
-            return ResponseEntity.ok(Map.of(
-                    "message", "Login successful.",
-                    "role", user.getRole() // Convert enum to string
-            ));
-        } catch (RuntimeException e) {
+        Users user = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", e.getMessage()));
+                    .body(Map.of("message", "Invalid email or password."));
         }
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Login successful.",
+                "userId", String.valueOf(user.getUserId()),
+                "email", user.getEmail(),
+                "role", user.getRole()
+        ));
     }
 }

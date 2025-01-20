@@ -1,8 +1,10 @@
 package com.bloodbank_webapp.backend.service;
 
 import com.bloodbank_webapp.backend.dto.ContactInfoDTO;
+import com.bloodbank_webapp.backend.model.Users;
 import com.bloodbank_webapp.backend.model.ContactInfo;
 import com.bloodbank_webapp.backend.repository.ContactInfoRepository;
+import com.bloodbank_webapp.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,53 +17,34 @@ public class ContactInfoService {
     @Autowired
     private ContactInfoRepository contactInfoRepository;
 
-    public List<ContactInfoDTO> getAllContactInfos() {
-        return contactInfoRepository.findAll().stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+    @Autowired
+    private UserRepository userRepository;
+
+    public ContactInfo getContactInfoByUserId(Long userId) {
+        return contactInfoRepository.findByUserUserId(userId);
     }
 
-    public ContactInfoDTO getContactInfoById(Long id) {
-        ContactInfo contactInfo = contactInfoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Contact Info not found"));
-        return mapToDTO(contactInfo);
-    }
+    public ContactInfo updateContactInfo(Long userId, ContactInfo contactInfoRequest) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-    public void createContactInfo(ContactInfoDTO contactInfoDTO) {
-        ContactInfo contactInfo = mapToEntity(contactInfoDTO);
-        contactInfoRepository.save(contactInfo);
-    }
+        ContactInfo contactInfo = contactInfoRepository.findByUserUserId(userId);
+        if (contactInfo == null) {
+            contactInfo = new ContactInfo();
+            contactInfo.setUser(user);
+        }
 
-    // Mapper: Entity to DTO
-    private ContactInfoDTO mapToDTO(ContactInfo contactInfo) {
-        ContactInfoDTO dto = new ContactInfoDTO();
-        dto.setContactId(contactInfo.getContactId());
-        dto.setPhoneNumber(contactInfo.getPhoneNumber());
-        dto.setMobileOperator(contactInfo.getMobileOperator().name());
-        dto.setMobileNumber(contactInfo.getMobileNumber());
-        dto.setStreetAddress(contactInfo.getStreetAddress());
-        dto.setAddressLine1(contactInfo.getAddressLine1());
-        dto.setAddressLine2(contactInfo.getAddressLine2());
-        dto.setAddressLine3(contactInfo.getAddressLine3());
-        dto.setCity(contactInfo.getCity());
-        dto.setDistrict(contactInfo.getDistrict());
-        dto.setCountry(contactInfo.getCountry());
-        return dto;
-    }
+        contactInfo.setPhoneNumber(contactInfoRequest.getPhoneNumber());
+        contactInfo.setMobileOperator(contactInfoRequest.getMobileOperator());
+        contactInfo.setMobileNumber(contactInfoRequest.getMobileNumber());
+        contactInfo.setStreetAddress(contactInfoRequest.getStreetAddress());
+        contactInfo.setAddressLine1(contactInfoRequest.getAddressLine1());
+        contactInfo.setAddressLine2(contactInfoRequest.getAddressLine2());
+        contactInfo.setAddressLine3(contactInfoRequest.getAddressLine3());
+        contactInfo.setCity(contactInfoRequest.getCity());
+        contactInfo.setDistrict(contactInfoRequest.getDistrict());
+        contactInfo.setCountry(contactInfoRequest.getCountry());
 
-    // Mapper: DTO to Entity
-    private ContactInfo mapToEntity(ContactInfoDTO dto) {
-        ContactInfo contactInfo = new ContactInfo();
-        contactInfo.setPhoneNumber(dto.getPhoneNumber());
-        contactInfo.setMobileOperator(ContactInfo.MobileOperator.valueOf(dto.getMobileOperator()));
-        contactInfo.setMobileNumber(dto.getMobileNumber());
-        contactInfo.setStreetAddress(dto.getStreetAddress());
-        contactInfo.setAddressLine1(dto.getAddressLine1());
-        contactInfo.setAddressLine2(dto.getAddressLine2());
-        contactInfo.setAddressLine3(dto.getAddressLine3());
-        contactInfo.setCity(dto.getCity());
-        contactInfo.setDistrict(dto.getDistrict());
-        contactInfo.setCountry(dto.getCountry());
-        return contactInfo;
+        return contactInfoRepository.save(contactInfo);
     }
 }
