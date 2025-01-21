@@ -34,6 +34,9 @@ public class ContactInfoService {
             contactInfo.setUser(user);
         }
 
+        // Log the incoming request
+        System.out.println("Mobile Number from Request: " + contactInfoRequest.getMobileNumber());
+
         contactInfo.setPhoneNumber(contactInfoRequest.getPhoneNumber());
         contactInfo.setMobileOperator(contactInfoRequest.getMobileOperator());
         contactInfo.setMobileNumber(contactInfoRequest.getMobileNumber());
@@ -45,6 +48,10 @@ public class ContactInfoService {
         contactInfo.setDistrict(contactInfoRequest.getDistrict());
         contactInfo.setCountry(contactInfoRequest.getCountry());
 
+        // Log entity before saving
+        System.out.println("Mobile Number in Entity: " + contactInfo.getMobileNumber());
+
         return contactInfoRepository.save(contactInfo);
     }
+
 }

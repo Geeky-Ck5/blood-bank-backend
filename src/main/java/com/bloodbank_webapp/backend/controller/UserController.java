@@ -58,9 +58,24 @@ public class UserController {
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<String> updateProfile(@RequestBody ProfileUpdateRequestDTO profileRequest, @AuthenticationPrincipal Users user) {
-        userService.updateProfile(user, profileRequest);
-        return ResponseEntity.ok("Profile updated successfully.");
+    public ResponseEntity<Map<String, String>> updateProfile(@RequestBody ProfileUpdateRequestDTO profileRequest) {
+        try {
+            userService.updateProfile(userService.getUserById(profileRequest.getUserId()), profileRequest);
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "message", "Profile updated successfully."
+            ));
+        } catch (UserService.UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                    "status", "error",
+                    "message", e.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "status", "error",
+                    "message", "An error occurred while updating the profile."
+            ));
+        }
     }
 
     @PutMapping("/{id}/profile")

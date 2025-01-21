@@ -47,7 +47,7 @@ public class ContactInfo {
     private Users user;
 
     public enum MobileOperator {
-        emtel, mytmu, chilli, other
+        EMTEL, MYTMU, CHILLI, OTHER
     }
 
     // Getters AND Setters
@@ -146,4 +146,6 @@ public class ContactInfo {
     public void setUser(Users user) {
         this.user = user;
     }
+
+
 }

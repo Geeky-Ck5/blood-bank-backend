@@ -80,7 +80,7 @@ public class ProfileUpdateRequestDTO {
     public ProfileUpdateRequestDTO() {
     }
 
-    public ProfileUpdateRequestDTO(String firstName, String lastName, String gender, String nationalId, String bloodGroup, boolean eligibilityStatus, Long preferredCenterId) {
+   public ProfileUpdateRequestDTO(String firstName, String lastName, String gender, String nationalId, String bloodGroup, boolean eligibilityStatus, Long preferredCenterId) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;

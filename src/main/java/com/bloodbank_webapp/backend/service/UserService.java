@@ -7,6 +7,7 @@ import com.bloodbank_webapp.backend.model.Center;
 import com.bloodbank_webapp.backend.model.Users;
 import com.bloodbank_webapp.backend.repository.UserRepository;
 import com.bloodbank_webapp.backend.repository.CenterRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -119,22 +120,18 @@ public class UserService {
         userRepository.save(newUser);
     }
 
+    @Transactional
     public void updateProfile(Users user, ProfileUpdateRequestDTO profileRequest) {
-        // Validate the provided user object or fetch it from the database
+        // Validate the user object
         if (user == null) {
-            user = getUserById(profileRequest.getUserId());
-            if (user == null) {
-                throw new UserNotFoundException("User not found with ID: " + profileRequest.getUserId());
-            }
+            throw new UserNotFoundException("User not found with ID: " + profileRequest.getUserId());
         }
 
-
-
+        // Update user details
         user.setFirstName(profileRequest.getFirstName());
         user.setLastName(profileRequest.getLastName());
         if (profileRequest.getGender() != null) {
             try {
-                // Normalize string input before converting to enum
                 user.setGender(Users.Gender.valueOf(profileRequest.getGender().trim().toUpperCase()));
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Invalid gender value: " + profileRequest.getGender());
@@ -145,13 +142,7 @@ public class UserService {
         user.setEligibilityStatus(profileRequest.isEligibilityStatus());
         user.setStatus(Users.Status.ACTIVE);
 
-        // Handle preferred center update
-        if (profileRequest.getPreferredCenterId() != null) {
-            Center preferredCenter = centerRepository.findById(profileRequest.getPreferredCenterId())
-                    .orElseThrow(() -> new RuntimeException("Center not found with id: " + profileRequest.getPreferredCenterId()));
-            user.setPreferredCenter(preferredCenter);
-        }
-
+        // Save the updated user to the database
         userRepository.save(user);
     }
 
