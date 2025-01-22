@@ -172,5 +172,19 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
     }
 
+    public void updateUserStatus(Long userId, String newStatus) {
+        // Fetch the user by ID
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
+        // Validate the status
+        if (!"ACTIVE".equalsIgnoreCase(newStatus) && !"INACTIVE".equalsIgnoreCase(newStatus)) {
+            throw new IllegalArgumentException("Invalid status value. Only ACTIVE or INACTIVE are allowed.");
+        }
+
+        // Update and save the status
+        user.setStatus(Users.Status.valueOf(newStatus.toUpperCase()));
+        userRepository.save(user);
+    }
 }
+

@@ -85,4 +85,26 @@ public class UserController {
         return ResponseEntity.ok("Profile updated successfully.");
     }
 
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Map<String, String>> updateUserStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> statusRequest) {
+        String newStatus = statusRequest.get("status");
+
+        try {
+            userService.updateUserStatus(id, newStatus);
+            return ResponseEntity.ok(Map.of(
+                    "message", "User status updated successfully.",
+                    "status", newStatus
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                    "error", e.getMessage()
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                    "error", e.getMessage()
+            ));
+        }
+    }
 }
