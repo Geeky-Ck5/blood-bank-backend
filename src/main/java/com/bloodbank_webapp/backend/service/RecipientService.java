@@ -29,7 +29,7 @@ public class RecipientService {
 
     public Recipients updateRecipientPriority(Long recipientId, String priority) {
         // Validate priority
-        if (!List.of("High", "Medium", "Low").contains(priority)) {
+        if (!List.of("high", "medium", "low").contains(priority)) {
             throw new IllegalArgumentException("Invalid priority value. Allowed values are: High, Medium, Low.");
         }
 

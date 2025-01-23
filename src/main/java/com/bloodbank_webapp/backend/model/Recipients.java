@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Table(name = "recipients")
-public class Recipients {
+@Table(name = "RECIPIENTS")
+public class  Recipients {
 
 
         @Id
