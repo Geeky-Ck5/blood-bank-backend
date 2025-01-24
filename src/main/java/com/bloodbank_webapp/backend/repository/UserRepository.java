@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,5 +18,8 @@ public interface UserRepository extends JpaRepository<Users, Long> {
 
     @Query("SELECT COUNT(u) FROM Users u WHERE u.role = 'recipient'")
     Long countRecipients();
+
+    @Query("SELECT u FROM Users u") // Fetch all users
+    List<Users> findAllUsers();
 
 }

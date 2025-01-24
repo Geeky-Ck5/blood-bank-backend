@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -107,4 +108,11 @@ public class UserController {
             ));
         }
     }
+
+    @GetMapping("/basic-details")
+    public ResponseEntity<List<UserDTO>> getAllUsersWithBasicDetails() {
+        List<UserDTO> users = userService.getAllUsersWithBasicDetails();
+        return ResponseEntity.ok(users);
+    }
+
 }

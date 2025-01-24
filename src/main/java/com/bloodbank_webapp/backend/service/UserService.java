@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -185,6 +187,17 @@ public class UserService {
         // Update and save the status
         user.setStatus(Users.Status.valueOf(newStatus.toUpperCase()));
         userRepository.save(user);
+    }
+
+
+
+    public List<UserDTO> getAllUsersWithBasicDetails() {
+        List<Users> users = userRepository.findAllUsers();
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (Users user : users) {
+            userDTOs.add(mapToDTO(user));
+        }
+        return userDTOs;
     }
 }
 
