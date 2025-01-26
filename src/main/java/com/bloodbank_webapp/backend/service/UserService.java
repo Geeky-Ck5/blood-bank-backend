@@ -13,9 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -199,5 +197,45 @@ public class UserService {
         }
         return userDTOs;
     }
+
+    @Autowired
+    private EmailService emailService; // Assume EmailService is implemented for sending emails
+
+    public void generateAndSendActivationToken(String email) {
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+
+        // Generate 4-digit random token
+        String token = String.valueOf((int) (Math.random() * 9000) + 1000);
+
+        // Set token expiry to 5 minutes from now
+        LocalDateTime expiry = LocalDateTime.now().plusMinutes(5);
+
+        // Update the user's token and expiry in the database
+        userRepository.updateActivationToken(email, token, expiry);
+
+        // Send the email with the activation token
+        String subject = "Your Activation Token";
+        String body = "Your activation token is: " + token + ". It expires in 5 minutes.";
+        emailService.sendEmail(email, subject, body);
+    }
+
+    public Map<String, Object> validateActivationToken(String token) {
+        Users user = userRepository.findValidToken(token)
+                .orElseThrow(() -> new RuntimeException("Invalid or expired token"));
+
+        // Activate the user
+        userRepository.activateUser(user.getUserId());
+
+        // Return email and userId
+        Map<String, Object> response = new HashMap<>();
+        response.put("email", user.getEmail());
+        response.put("userId", user.getUserId());
+
+        return response;
+    }
+
+
+
 }
 
