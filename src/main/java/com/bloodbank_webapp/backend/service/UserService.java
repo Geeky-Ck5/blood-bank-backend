@@ -220,14 +220,15 @@ public class UserService {
         emailService.sendEmail(email, subject, body);
     }
 
-    public Map<String, Object> validateActivationToken(String token) {
-        Users user = userRepository.findValidToken(token)
+    public Map<String, Object> validateActivationToken(String email, String token) {
+        // Find the user with the matching email and valid token
+        Users user = userRepository.findValidTokenByEmail(email, token)
                 .orElseThrow(() -> new RuntimeException("Invalid or expired token"));
 
         // Activate the user
         userRepository.activateUser(user.getUserId());
 
-        // Return email and userId
+        // Prepare the response
         Map<String, Object> response = new HashMap<>();
         response.put("email", user.getEmail());
         response.put("userId", user.getUserId());

@@ -27,8 +27,14 @@ public class AuthController {
 
     @PostMapping("/validate-token")
     public ResponseEntity<Map<String, Object>> validateToken(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
         String token = request.get("token");
-        Map<String, Object> response = userService.validateActivationToken(token);
+
+        if (email == null || token == null) {
+            throw new IllegalArgumentException("Both email and token are required");
+        }
+
+        Map<String, Object> response = userService.validateActivationToken(email, token);
         return ResponseEntity.ok(response);
     }
 

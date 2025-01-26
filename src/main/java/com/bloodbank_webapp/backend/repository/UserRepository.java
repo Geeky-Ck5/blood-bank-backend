@@ -37,7 +37,8 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     @Query("UPDATE Users u SET u.status = 'ACTIVE' WHERE u.userId = :userId")
     void activateUser(@Param("userId") Long userId);
 
-    @Query("SELECT u FROM Users u WHERE u.activationToken = :token AND u.tokenExpiry > CURRENT_TIMESTAMP")
-    Optional<Users> findValidToken(@Param("token") String token);
+    @Query("SELECT u FROM Users u WHERE u.email = :email AND u.activationToken = :token AND u.tokenExpiry > CURRENT_TIMESTAMP")
+    Optional<Users> findValidTokenByEmail(@Param("email") String email, @Param("token") String token);
+
 
 }
