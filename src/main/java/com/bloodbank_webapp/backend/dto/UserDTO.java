@@ -14,6 +14,7 @@ public class UserDTO {
     private String status;
     private boolean autoReminders;
     private Long preferredCenterId;
+    private int failedLoginAttempts;
 
 
     // Getters and Setters
@@ -119,5 +120,13 @@ public class UserDTO {
 
     public void setPreferredCenterId(Long preferredCenterId) {
         this.preferredCenterId = preferredCenterId;
+    }
+
+    public int getFailedLoginAttempts() {
+        return failedLoginAttempts;
+    }
+
+    public void setFailedLoginAttempts(int failedLoginAttempts) {
+        this.failedLoginAttempts = failedLoginAttempts;
     }
 }

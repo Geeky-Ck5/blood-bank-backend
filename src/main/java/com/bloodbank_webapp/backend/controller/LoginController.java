@@ -32,4 +32,53 @@ public class LoginController {
                 "role", user.getRole()
         ));
     }
+
+    @PostMapping("/reset-failed-login")
+    public ResponseEntity<String> resetFailedLogin(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        userService.resetFailedLoginAttempts(email);
+        return ResponseEntity.ok("Failed login attempts have been reset.");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String token = request.get("token");
+        String newPassword = request.get("newPassword");
+
+        if (email == null || token == null || newPassword == null) {
+            return ResponseEntity.badRequest().body("Email, token, and new password are required.");
+        }
+
+        try {
+            userService.resetPasswordWithToken(email, token, newPassword);
+            return ResponseEntity.ok("Password has been reset successfully.");
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+
+        if (email == null || email.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Email is required."));
+        }
+
+        try {
+            userService.generateForgotPasswordToken(email);
+            return ResponseEntity.ok(Map.of(
+                    "message", "A password reset token has been sent to your email.",
+                    "status", "success"
+            ));
+        } catch (UserService.UserNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                    "error", ex.getMessage(),
+                    "status", "fail"
+            ));
+        }
+    }
+
+
 }

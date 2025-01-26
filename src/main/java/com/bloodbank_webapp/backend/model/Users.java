@@ -65,6 +65,10 @@ public class Users {
     @Column(name = "CREATED_AT", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+
+    @Column(name = "FAILED_LOGIN_ATTEMPTS", nullable = false)
+    private int failedLoginAttempts = 0; // Default to 0
+
     // Getters and Setters
 
     public Long getUserId() {
@@ -224,5 +228,13 @@ public class Users {
 
     public enum Status {
         ACTIVE, INACTIVE
+    }
+
+    public int getFailedLoginAttempts() {
+        return failedLoginAttempts;
+    }
+
+    public void setFailedLoginAttempts(int failedLoginAttempts) {
+        this.failedLoginAttempts = failedLoginAttempts;
     }
 }

@@ -92,12 +92,22 @@ public class UserService {
         Users user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
+        // Check if account is locked
+        if (user.getStatus() == Users.Status.INACTIVE) {
+            throw new RuntimeException("Account is locked. Please contact support or reset your password.");
+        }
+
+        // Check if password is correct
         if (!passwordEncoder.matches(password, user.getPassword())) {
+            incrementFailedLogin(email); // Increment failed attempts on incorrect password
             throw new RuntimeException("Invalid email or password");
         }
 
-        // Return a success response or generate a token if using JWT
-        return "Login successful";
+        // Reset failed attempts after successful login
+        resetFailedLoginAttempts(email);
+
+        // Return a success response or JWT token
+        return "Login successful!";
     }
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -154,16 +164,23 @@ public class UserService {
 
 
     public Users authenticate(String email, String password) {
-        // Find the user by email
         Users user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
-        // Validate the password
+        // Check if account is locked
+        if (user.getStatus() == Users.Status.INACTIVE) {
+            throw new RuntimeException("Account is locked. Please reset your password.");
+        }
+
+        // Check if the password matches
         if (!passwordEncoder.matches(password, user.getPassword())) {
+            incrementFailedLogin(String.valueOf(user));
             throw new RuntimeException("Invalid email or password");
         }
 
-        // Return the authenticated user
+        // Reset failed login attempts on successful login
+        resetFailedLoginAttempts(String.valueOf(user));
+
         return user;
     }
 
@@ -214,9 +231,25 @@ public class UserService {
         // Update the user's token and expiry in the database
         userRepository.updateActivationToken(email, token, expiry);
 
-        // Send the email with the activation token
+        // Construct the validation link
+        String validationLink = "http://localhost:4200/validate-token?email=" + email + "&token=" + token;
+
+
+        // Email subject and body
         String subject = "Your Activation Token";
-        String body = "Your activation token is: " + token + ". It expires in 5 minutes.";
+        String body = String.format(
+                "Dear %s,\n\n" +
+                        "Your activation token is: %s\n\n" +
+                        "Click the link below to validate your token:\n" +
+                        "%s\n\n" +
+                        "Please note that the token will expire in 5 minutes.\n\n" +
+                        "Best regards,\nBloodBank Team",
+                user.getFirstName() != null ? user.getFirstName() : "User", // Use first name if available
+                token,
+                validationLink
+        );
+
+        // Send the email
         emailService.sendEmail(email, subject, body);
     }
 
@@ -236,7 +269,117 @@ public class UserService {
         return response;
     }
 
+    public void incrementFailedLogin(String email) {
+        // Find user by email
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
+        // Increment the failed login attempts
+        int failedAttempts = user.getFailedLoginAttempts() + 1;
+        user.setFailedLoginAttempts(failedAttempts);
+
+        // Lock account if failed attempts exceed 3
+        if (failedAttempts >= 3) {
+            user.setStatus(Users.Status.INACTIVE); // Set status to INACTIVE
+        }
+
+        // Save the updated user
+        userRepository.save(user);
+    }
+
+    public void resetFailedLoginAttempts(String email) {
+        // Find user by email
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Reset failed login attempts
+        user.setFailedLoginAttempts(0);
+        userRepository.save(user);
+    }
+
+    public void resetPasswordWithToken(String email, String token, String newPassword) {
+        // Find the user by email
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+
+        // Validate the token and expiry
+        if (user.getActivationToken() == null || !user.getActivationToken().equals(token)) {
+            throw new RuntimeException("Invalid token.");
+        }
+
+        if (user.getTokenExpiry() == null || user.getTokenExpiry().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Token has expired.");
+        }
+
+        // Update the password
+        user.setPassword(passwordEncoder.encode(newPassword));
+
+        // Clear the token and expiry
+        user.setActivationToken(null);
+        user.setTokenExpiry(null);
+
+        userRepository.save(user);
+    }
+
+
+    public void forgotPassword(String email) {
+        // Find the user by email
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with the provided email"));
+
+
+
+        userRepository.save(user);
+
+        // Generate the reset link
+        String resetLink = "http://localhost:4200//auth/forgot-password";
+
+        // Email subject and body
+        String subject = "Password Reset Request";
+        String body = String.format(
+                "Dear %s,\n\n" +
+                        "You recently requested to reset your password. Please click the link below to reset your password:\n\n" +
+                        "%s\n\n" +
+                        "This link will expire in 15 minutes.\n\n" +
+                        "If you did not request a password reset, please ignore this email.\n\n" +
+                        "Best regards,\nBloodBank Team",
+                user.getFirstName() != null ? user.getFirstName() : "User",
+                resetLink
+        );
+
+        // Send the email
+        emailService.sendEmail(email, subject, body);
+    }
+
+
+    public void generateForgotPasswordToken(String email) {
+        // Find the user by email
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+
+        // Generate a 4-digit token
+        String token = String.format("%04d", new Random().nextInt(10000));
+
+        // Set the token and expiry date
+        user.setActivationToken(token);
+        user.setTokenExpiry(LocalDateTime.now().plusDays(1)); // 24-hour expiry
+        userRepository.save(user);
+
+        // Send the token via email
+        String subject = "Password Reset Token";
+        String body = String.format(
+                "Dear %s,\n\n" +
+                        "You recently requested to reset your password. Use the following token to reset your password:\n\n" +
+                        "Token: %s\n\n" +
+                        "This token will expire in 24 hours.\n\n" +
+                        "If you did not request a password reset, please ignore this email.\n\n" +
+                        "Best regards,\nBloodBank Team",
+                user.getFirstName() != null ? user.getFirstName() : "User",
+                token
+        );
+
+        emailService.sendEmail(email, subject, body);
+    }
 
 }
 
