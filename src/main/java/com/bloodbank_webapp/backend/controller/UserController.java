@@ -3,8 +3,10 @@ package com.bloodbank_webapp.backend.controller;
 import com.bloodbank_webapp.backend.dto.UserDTO;
 import com.bloodbank_webapp.backend.dto.SignupRequestDTO;
 import com.bloodbank_webapp.backend.dto.ProfileUpdateRequestDTO;
+import com.bloodbank_webapp.backend.model.Center;
 import com.bloodbank_webapp.backend.model.Users;
 import com.bloodbank_webapp.backend.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,7 +63,7 @@ public class UserController {
     @PutMapping("/profile")
     public ResponseEntity<Map<String, String>> updateProfile(@RequestBody ProfileUpdateRequestDTO profileRequest) {
         try {
-            userService.updateProfile(userService.getUserById(profileRequest.getUserId()), profileRequest);
+            userService.updateProfile(profileRequest);
             return ResponseEntity.ok(Map.of(
                     "status", "success",
                     "message", "Profile updated successfully."
@@ -72,6 +74,7 @@ public class UserController {
                     "message", e.getMessage()
             ));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                     "status", "error",
                     "message", "An error occurred while updating the profile."
@@ -79,10 +82,12 @@ public class UserController {
         }
     }
 
+
+
     @PutMapping("/{id}/profile")
     public ResponseEntity<String> updateProfile(@PathVariable Long id, @RequestBody ProfileUpdateRequestDTO profileRequest) {
         Users user = userService.getUserById(id); // Assuming a getUserById method exists
-        userService.updateProfile(user, profileRequest);
+        userService.updateProfile(profileRequest);
         return ResponseEntity.ok("Profile updated successfully.");
     }
 

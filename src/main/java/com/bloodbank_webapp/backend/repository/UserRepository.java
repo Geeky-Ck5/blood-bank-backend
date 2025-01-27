@@ -16,6 +16,8 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<Users, Long> {
     Optional<Users> findByEmail(String email);
     Optional<Users> findByActivationToken(String activationToken);
+    Optional<Users> findByEmailAndActivationToken(String email, String activationToken);
+
 
     @Query("SELECT COUNT(u) FROM Users u WHERE u.role = 'donor'")
     Long countDonors();
