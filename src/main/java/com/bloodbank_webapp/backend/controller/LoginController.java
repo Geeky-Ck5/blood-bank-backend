@@ -24,15 +24,16 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("message", "Invalid email or password."));
         }
-
+        // Handle null firstName gracefully
+        String firstName = user.getFirstName() != null ? user.getFirstName() : "";
         return ResponseEntity.ok(Map.of(
                 "message", "Login successful.",
                 "userId", String.valueOf(user.getUserId()),
                 "email", user.getEmail(),
-                "role", user.getRole()
+                "role", user.getRole(),
+                "firstName", firstName // Include first name in the response
         ));
     }
-
     @PostMapping("/reset-failed-login")
     public ResponseEntity<String> resetFailedLogin(@RequestBody Map<String, String> request) {
         String email = request.get("email");
