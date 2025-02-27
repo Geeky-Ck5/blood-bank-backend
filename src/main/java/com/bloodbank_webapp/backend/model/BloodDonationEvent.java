@@ -1,6 +1,7 @@
 package com.bloodbank_webapp.backend.model;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
 @Entity
@@ -9,7 +10,7 @@ public class BloodDonationEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "EVENT_ID")
+    @Column(name = "EVENT_ID", nullable = false)
     private Long eventId;
 
     @Column(name = "EVENT_NAME", nullable = false)
@@ -19,7 +20,11 @@ public class BloodDonationEvent {
     private LocalDate eventDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "LOCATION_ID", nullable = false)
+    @JoinColumn(name = "CENTER_ID", nullable = true) // Can be null if event is not linked to a center
+    private Center center;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "LOCATION_ID", nullable = true) // Can be null if event is not linked to a location
     private BloodDonationLocation location;
 
     @Column(name = "DESCRIPTION")
@@ -36,40 +41,81 @@ public class BloodDonationEvent {
     private Integer expectedParticipants;
 
     public enum EventStatus {
-        SCHEDULED, COMPLETED, CANCELED;
-
-        public static EventStatus fromString(String value) {
-            for (EventStatus status : EventStatus.values()) {
-                if (status.name().equalsIgnoreCase(value)) {
-                    return status;
-                }
-            }
-            throw new IllegalArgumentException("Invalid event status: " + value);
-        }
+        scheduled,
+        completed,
+        canceled
     }
 
-    // Getters and Setters
-    public Long getEventId() { return eventId; }
-    public void setEventId(Long eventId) { this.eventId = eventId; }
+    // ✅ GETTERS & SETTERS
+    public Long getEventId() {
+        return eventId;
+    }
 
-    public String getEventName() { return eventName; }
-    public void setEventName(String eventName) { this.eventName = eventName; }
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
+    }
 
-    public LocalDate getEventDate() { return eventDate; }
-    public void setEventDate(LocalDate eventDate) { this.eventDate = eventDate; }
+    public String getEventName() {
+        return eventName;
+    }
 
-    public BloodDonationLocation getLocation() { return location; }
-    public void setLocation(BloodDonationLocation location) { this.location = location; }
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public LocalDate getEventDate() {
+        return eventDate;
+    }
 
-    public EventStatus getStatus() { return status; }
-    public void setStatus(EventStatus status) { this.status = status; }
+    public void setEventDate(LocalDate eventDate) {
+        this.eventDate = eventDate;
+    }
 
-    public String getComments() { return comments; }
-    public void setComments(String comments) { this.comments = comments; }
+    public Center getCenter() {
+        return center;
+    }
 
-    public Integer getExpectedParticipants() { return expectedParticipants; }
-    public void setExpectedParticipants(Integer expectedParticipants) { this.expectedParticipants = expectedParticipants; }
+    public void setCenter(Center center) {
+        this.center = center;
+    }
+
+    public BloodDonationLocation getLocation() {
+        return location;
+    }
+
+    public void setLocation(BloodDonationLocation location) {
+        this.location = location;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public EventStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EventStatus status) {
+        this.status = status;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    public Integer getExpectedParticipants() {
+        return expectedParticipants;
+    }
+
+    public void setExpectedParticipants(Integer expectedParticipants) {
+        this.expectedParticipants = expectedParticipants;
+    }
 }
