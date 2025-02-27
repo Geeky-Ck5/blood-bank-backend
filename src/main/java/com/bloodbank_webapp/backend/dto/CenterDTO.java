@@ -1,68 +1,46 @@
 package com.bloodbank_webapp.backend.dto;
 
+import com.bloodbank_webapp.backend.model.Center;
+
 public class CenterDTO {
     private Long centerId;
     private String name;
-    private String streetAddress;
+    private String address;  // ✅ Use "address" instead of "streetAddress"
     private String city;
     private String district;
     private String country;
     private String contactNumber;
 
-    // Getters and Setters
-    public Long getCenterId() {
-        return centerId;
+    // ✅ Constructor to map entity to DTO
+    public CenterDTO(Center center) {
+        this.centerId = center.getCenterId();
+        this.name = center.getName();
+        this.address = center.getAddress();  // ✅ Fix: Use address
+        this.city = center.getCity();
+        this.district = center.getDistrict();
+        this.country = center.getCountry();
+        this.contactNumber = center.getContactNumber();
     }
 
-    public void setCenterId(Long centerId) {
-        this.centerId = centerId;
-    }
+    // ✅ Getters and Setters
+    public Long getCenterId() { return centerId; }
+    public void setCenterId(Long centerId) { this.centerId = centerId; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getAddress() { return address; }  // ✅ Fix: Use address
+    public void setAddress(String address) { this.address = address; }
 
-    public String getStreetAddress() {
-        return streetAddress;
-    }
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
 
-    public void setStreetAddress(String streetAddress) {
-        this.streetAddress = streetAddress;
-    }
+    public String getDistrict() { return district; }
+    public void setDistrict(String district) { this.district = district; }
 
-    public String getCity() {
-        return city;
-    }
+    public String getCountry() { return country; }
+    public void setCountry(String country) { this.country = country; }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(String district) {
-        this.district = district;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getContactNumber() {
-        return contactNumber;
-    }
-
-    public void setContactNumber(String contactNumber) {
-        this.contactNumber = contactNumber;
-    }
+    public String getContactNumber() { return contactNumber; }
+    public void setContactNumber(String contactNumber) { this.contactNumber = contactNumber; }
 }
