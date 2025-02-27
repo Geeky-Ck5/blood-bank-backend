@@ -9,33 +9,43 @@ public class BloodDonationEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "event_id", nullable = false)
+    @Column(name = "EVENT_ID")
     private Long eventId;
 
-    @Column(name = "event_name", nullable = false)
+    @Column(name = "EVENT_NAME", nullable = false)
     private String eventName;
 
-    @Column(name = "event_date", nullable = false)
+    @Column(name = "EVENT_DATE", nullable = false)
     private LocalDate eventDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id", nullable = false)
-    private BloodDonationLocation location; // Foreign key to BloodDonationLocation table
+    @JoinColumn(name = "LOCATION_ID", nullable = false)
+    private BloodDonationLocation location;
 
-    @Column(name = "description")
+    @Column(name = "DESCRIPTION")
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "STATUS", nullable = false)
     private EventStatus status;
 
-    @Column(name = "expected_participants")
+    @Column(name = "COMMENTS")
+    private String comments;
+
+    @Column(name = "EXPECTED_PARTICIPANTS")
     private Integer expectedParticipants;
 
     public enum EventStatus {
-        SCHEDULED,
-        COMPLETED,
-        CANCELED
+        SCHEDULED, COMPLETED, CANCELED;
+
+        public static EventStatus fromString(String value) {
+            for (EventStatus status : EventStatus.values()) {
+                if (status.name().equalsIgnoreCase(value)) {
+                    return status;
+                }
+            }
+            throw new IllegalArgumentException("Invalid event status: " + value);
+        }
     }
 
     // Getters and Setters
@@ -56,6 +66,9 @@ public class BloodDonationEvent {
 
     public EventStatus getStatus() { return status; }
     public void setStatus(EventStatus status) { this.status = status; }
+
+    public String getComments() { return comments; }
+    public void setComments(String comments) { this.comments = comments; }
 
     public Integer getExpectedParticipants() { return expectedParticipants; }
     public void setExpectedParticipants(Integer expectedParticipants) { this.expectedParticipants = expectedParticipants; }

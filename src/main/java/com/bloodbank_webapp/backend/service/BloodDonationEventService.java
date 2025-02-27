@@ -41,7 +41,7 @@ public class BloodDonationEventService {
         event.setEventDate(eventDTO.getEventDate());
         event.setLocation(location);
         event.setDescription(eventDTO.getDescription());
-        event.setStatus(BloodDonationEvent.EventStatus.valueOf(eventDTO.getStatus().toUpperCase()));
+        event.setStatus(BloodDonationEvent.EventStatus.valueOf(eventDTO.getStatus()));
         event.setExpectedParticipants(eventDTO.getExpectedParticipants());
 
         BloodDonationEvent savedEvent = eventRepository.save(event);
