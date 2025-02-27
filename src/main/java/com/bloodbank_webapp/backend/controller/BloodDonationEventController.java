@@ -29,4 +29,15 @@ public class BloodDonationEventController {
     public ResponseEntity<BloodDonationEventDTO> addEvent(@RequestBody BloodDonationEventDTO eventDTO) {
         return ResponseEntity.ok(eventService.addEvent(eventDTO));
     }
+
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<Void> deleteEvent(@PathVariable Long eventId) {
+        return eventService.deleteEvent(eventId) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{eventId}")
+    public ResponseEntity<BloodDonationEventDTO> updateEvent(@PathVariable Long eventId, @RequestBody BloodDonationEventDTO eventDTO) {
+        BloodDonationEventDTO updatedEvent = eventService.updateEvent(eventId, eventDTO);
+        return updatedEvent != null ? ResponseEntity.ok(updatedEvent) : ResponseEntity.notFound().build();
+    }
 }
