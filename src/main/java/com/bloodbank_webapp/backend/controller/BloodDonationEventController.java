@@ -1,7 +1,6 @@
 package com.bloodbank_webapp.backend.controller;
 
 import com.bloodbank_webapp.backend.dto.BloodDonationEventDTO;
-import com.bloodbank_webapp.backend.model.BloodDonationEvent;
 import com.bloodbank_webapp.backend.service.BloodDonationEventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

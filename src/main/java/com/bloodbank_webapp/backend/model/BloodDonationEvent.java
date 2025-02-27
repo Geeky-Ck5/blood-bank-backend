@@ -2,7 +2,6 @@ package com.bloodbank_webapp.backend.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "BLOOD_DONATION_EVENT")
@@ -19,9 +18,9 @@ public class BloodDonationEvent {
     @Column(name = "event_date", nullable = false)
     private LocalDate eventDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", nullable = false)
-    private BloodDonationLocation location;
+    private BloodDonationLocation location; // Foreign key to BloodDonationLocation table
 
     @Column(name = "description")
     private String description;
@@ -33,14 +32,10 @@ public class BloodDonationEvent {
     @Column(name = "expected_participants")
     private Integer expectedParticipants;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
     public enum EventStatus {
-        SCHEDULED, COMPLETED, CANCELED
+        SCHEDULED,
+        COMPLETED,
+        CANCELED
     }
 
     // Getters and Setters
@@ -64,8 +59,4 @@ public class BloodDonationEvent {
 
     public Integer getExpectedParticipants() { return expectedParticipants; }
     public void setExpectedParticipants(Integer expectedParticipants) { this.expectedParticipants = expectedParticipants; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }

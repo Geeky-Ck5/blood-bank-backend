@@ -1,7 +1,6 @@
 package com.bloodbank_webapp.backend.dto;
 
 import com.bloodbank_webapp.backend.model.BloodDonationEvent;
-import com.bloodbank_webapp.backend.model.BloodDonationLocation;
 import java.time.LocalDate;
 
 public class BloodDonationEventDTO {
@@ -28,28 +27,37 @@ public class BloodDonationEventDTO {
         this.expectedParticipants = event.getExpectedParticipants();
     }
 
-    // Getters and Setters
-    public Long getEventId() { return eventId; }
-    public void setEventId(Long eventId) { this.eventId = eventId; }
+    public Integer getExpectedParticipants() {
+        return expectedParticipants;
+    }
 
-    public String getEventName() { return eventName; }
-    public void setEventName(String eventName) { this.eventName = eventName; }
+    public void setExpectedParticipants(Integer expectedParticipants) {
+        this.expectedParticipants = expectedParticipants;
+    }
 
-    public LocalDate getEventDate() { return eventDate; }
-    public void setEventDate(LocalDate eventDate) { this.eventDate = eventDate; }
+    public String getStatus() {
+        return status;
+    }
 
-    public String getLocationName() { return locationName; }
-    public void setLocationName(String locationName) { this.locationName = locationName; }
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getDescription() {
+        return description;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public Integer getExpectedParticipants() { return expectedParticipants; }
-    public void setExpectedParticipants(Integer expectedParticipants) { this.expectedParticipants = expectedParticipants; }
+    public String getLocationName() {
+        return locationName;
+    }
 
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
+    }
 
     public Long getLocationId() {
         return locationId;
@@ -58,4 +66,31 @@ public class BloodDonationEventDTO {
     public void setLocationId(Long locationId) {
         this.locationId = locationId;
     }
+
+    public LocalDate getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(LocalDate eventDate) {
+        this.eventDate = eventDate;
+    }
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
+    public Long getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
+    }
+
+
+
 }
