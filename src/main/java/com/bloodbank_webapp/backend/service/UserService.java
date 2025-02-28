@@ -8,6 +8,7 @@ import com.bloodbank_webapp.backend.model.Users;
 import com.bloodbank_webapp.backend.repository.UserRepository;
 import com.bloodbank_webapp.backend.repository.CenterRepository;
 import jakarta.transaction.Transactional;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -170,9 +171,14 @@ public class UserService {
         return user;
     }
 
-    public Users getUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+    public UserDTO getUserById(Long id) {
+        Optional<Users> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            Users user = userOptional.get();
+            return convertToUserDTO(user);
+        } else {
+            throw new RuntimeException("User not found with ID: " + id);
+        }
     }
 
     public void updateUserStatus(Long userId, String newStatus) {
@@ -287,6 +293,7 @@ public class UserService {
         dto.setEligibilityStatus(user.isEligibilityStatus());
         dto.setStatus(user.getStatus() != null ? user.getStatus().name() : null);
         dto.setAutoReminders(user.isAutoReminders());
+        dto.setLastDonation(user.getLastDonation());
         return dto;
     }
 
@@ -303,6 +310,7 @@ public class UserService {
         user.setEligibilityStatus(dto.isEligibilityStatus());
         user.setStatus(dto.getStatus() != null ? Users.Status.valueOf(dto.getStatus().toUpperCase()) : null);
         user.setAutoReminders(dto.isAutoReminders());
+        user.setLastDonation(user.getLastDonation());
         return user;
     }
 
@@ -314,4 +322,24 @@ public class UserService {
 
     @Autowired
     private EmailService emailService;
+
+
+    private UserDTO convertToUserDTO(Users user) {
+        UserDTO dto = new UserDTO();
+        dto.setUserId(user.getUserId());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setEmail(user.getEmail());
+        dto.setRole(user.getRole());
+        dto.setGender(dto.getGender());
+        dto.setNationalId(user.getNationalId());
+        dto.setBloodGroup(user.getBloodGroup());
+        dto.setEligibilityStatus(user.isEligibilityStatus());
+        dto.setStatus(dto.getStatus());
+        dto.setAutoReminders(user.isAutoReminders());
+        dto.setPreferredCenterId(user.getPreferredCenter() != null ? user.getPreferredCenter().getCenterId() : null);
+        dto.setFailedLoginAttempts(user.getFailedLoginAttempts());
+        dto.setLastDonation(user.getLastDonation());
+        return dto;
+    }
 }

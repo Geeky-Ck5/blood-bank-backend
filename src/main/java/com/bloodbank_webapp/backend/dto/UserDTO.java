@@ -1,5 +1,7 @@
 package com.bloodbank_webapp.backend.dto;
 
+import java.time.LocalDateTime;
+
 public class UserDTO {
     private Long userId;
     private String firstName;
@@ -15,6 +17,7 @@ public class UserDTO {
     private boolean autoReminders;
     private Long preferredCenterId;
     private int failedLoginAttempts;
+    private LocalDateTime lastDonation; // ✅ Added lastDonation field
 
 
     // Getters and Setters
@@ -128,5 +131,13 @@ public class UserDTO {
 
     public void setFailedLoginAttempts(int failedLoginAttempts) {
         this.failedLoginAttempts = failedLoginAttempts;
+    }
+
+    public LocalDateTime getLastDonation() {
+        return lastDonation;
+    }
+
+    public void setLastDonation(LocalDateTime lastDonation) {
+        this.lastDonation = lastDonation;
     }
 }

@@ -86,7 +86,7 @@ public class UserController {
 
     @PutMapping("/{id}/profile")
     public ResponseEntity<String> updateProfile(@PathVariable Long id, @RequestBody ProfileUpdateRequestDTO profileRequest) {
-        Users user = userService.getUserById(id); // Assuming a getUserById method exists
+        UserDTO user = userService.getUserById(id); // Assuming a getUserById method exists
         userService.updateProfile(profileRequest);
         return ResponseEntity.ok("Profile updated successfully.");
     }
@@ -118,6 +118,12 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getAllUsersWithBasicDetails() {
         List<UserDTO> users = userService.getAllUsersWithBasicDetails();
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        UserDTO user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
     }
 
 }
