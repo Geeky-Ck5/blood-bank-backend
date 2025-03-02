@@ -74,4 +74,8 @@ public class MessageService {
                 message.getStatus()
         );
     }
+
+    public Long getUnreadMessageCount(Long userId) {
+        return messageRepository.countByRecipientIdAndStatus(userId, "UNREAD");
+    }
 }

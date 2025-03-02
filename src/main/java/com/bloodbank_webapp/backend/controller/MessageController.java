@@ -47,4 +47,10 @@ public class MessageController {
         boolean deleted = messageService.deleteMessage(messageId);
         return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/unread-count/{userId}")
+    public ResponseEntity<Long> getUnreadMessageCount(@PathVariable Long userId) {
+        Long unreadCount = messageService.getUnreadMessageCount(userId);
+        return ResponseEntity.ok(unreadCount);
+    }
 }
