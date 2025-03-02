@@ -53,4 +53,11 @@ public class NotificationController {
 
         return ResponseEntity.ok(Map.of("status", "SUCCESS", "message", "Bulk notifications sent successfully."));
     }
+
+    // ✅ Manually trigger missed appointment notification (for testing)
+    @PostMapping("/missed-appointments")
+    public ResponseEntity<String> triggerMissedAppointmentNotifications() {
+        notificationService.checkMissedAppointments();
+        return ResponseEntity.ok("Missed appointment notifications sent.");
+    }
 }

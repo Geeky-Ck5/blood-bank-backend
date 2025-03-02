@@ -14,5 +14,7 @@ public interface AppointmentRepository extends JpaRepository<Appointments, Long>
 
     @Query("SELECT a FROM Appointments a WHERE a.userId = :userId AND a.date >= :today ORDER BY a.date ASC")
     List<Appointments> findUpcomingAppointmentsByUser(@Param("userId") Long userId, @Param("today") LocalDate today);
+    List<Appointments> findByDateBeforeAndStatus(LocalDate date, Appointments.AppointmentStatus status);
+
 }
 
