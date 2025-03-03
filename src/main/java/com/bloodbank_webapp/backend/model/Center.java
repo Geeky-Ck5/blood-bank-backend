@@ -35,10 +35,10 @@ public class Center {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "LATITUDE")
-    private Float latitude;
+    private double latitude;
 
     @Column(name = "LONGITUDE")
-    private Float longitude;
+    private double longitude;
 
 
     @OneToMany(mappedBy = "preferredCenter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -117,7 +117,7 @@ public class Center {
         this.users = users;
     }
 
-    public Float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
@@ -125,7 +125,7 @@ public class Center {
         this.latitude = latitude;
     }
 
-    public Float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 

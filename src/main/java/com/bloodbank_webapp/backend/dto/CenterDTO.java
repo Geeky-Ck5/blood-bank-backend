@@ -10,6 +10,8 @@ public class CenterDTO {
     private String district;
     private String country;
     private String contactNumber;
+    private Double longitude;  // 🆕 Added
+    private Double latitude;
 
     // ✅ Constructor to map entity to DTO
     public CenterDTO(Center center) {
@@ -20,6 +22,8 @@ public class CenterDTO {
         this.district = center.getDistrict();
         this.country = center.getCountry();
         this.contactNumber = center.getContactNumber();
+        this.longitude = Double.valueOf(center.getLongitude());  // 🆕 Map longitude
+        this.latitude = Double.valueOf(center.getLatitude());
     }
 
     // ✅ Getters and Setters
@@ -43,4 +47,10 @@ public class CenterDTO {
 
     public String getContactNumber() { return contactNumber; }
     public void setContactNumber(String contactNumber) { this.contactNumber = contactNumber; }
+
+    public Double getLongitude() { return longitude; }
+    public void setLongitude(Double longitude) { this.longitude = longitude; }
+
+    public Double getLatitude() { return latitude; }
+    public void setLatitude(Double latitude) { this.latitude = latitude; }
 }
