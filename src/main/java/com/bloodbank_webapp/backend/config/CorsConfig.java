@@ -14,7 +14,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://bloodbank-api-csbxgsaabfc4bjbn.eastus-01.azurewebsites.net") // Add localhost:4200 if testing from frontend
+                        .allowedOrigins("https://proud-bush-0a6644c0f.4.azurestaticapps.net") // Add localhost:4200 if testing from frontend
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*");
             }
