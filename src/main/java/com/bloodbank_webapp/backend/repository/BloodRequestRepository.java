@@ -15,7 +15,7 @@ public interface BloodRequestRepository extends JpaRepository<BloodRequest, Long
     List<Object[]> getRequestCountByBloodGroup();
 
     // Get total requests per user
-    @Query("SELECT r.userId, COUNT(r) FROM BloodRequest r GROUP BY r.user.userId")
+    @Query("SELECT r.userId, COUNT(r) FROM BloodRequest r GROUP BY r.userId")
     List<Object[]> getRequestCountByUser();
 
     // Get total requests by priority
