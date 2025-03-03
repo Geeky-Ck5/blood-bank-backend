@@ -39,7 +39,7 @@ public class BloodRequestService {
 
     // Get blood request history for a user
     public List<BloodRequestDTO> getBloodRequestHistory(Long userId) {
-        return bloodRequestRepository.findByUserUserId(userId)
+        return bloodRequestRepository.findByUserId(userId)
                 .stream().map(BloodRequestDTO::new)
                 .collect(Collectors.toList());
     }
