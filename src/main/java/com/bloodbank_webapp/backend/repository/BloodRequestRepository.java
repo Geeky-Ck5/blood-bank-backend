@@ -8,7 +8,7 @@ import java.util.List;
 public interface BloodRequestRepository extends JpaRepository<BloodRequest, Long> {
 
     // Get blood request history for a user
-    List<BloodRequest> findByUserUserId(Long userId);
+    List<BloodRequest> findByUserId(Long userId);
 
     // Get total requests per blood group
     @Query("SELECT r.bloodGroup, COUNT(r) FROM BloodRequest r GROUP BY r.bloodGroup")
